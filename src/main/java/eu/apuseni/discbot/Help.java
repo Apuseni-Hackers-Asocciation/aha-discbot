@@ -1,12 +1,12 @@
 package eu.apuseni.discbot;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.MessageChannel;
 
 public class Help extends AbstractAhaCommand {
-	private Hashtable<String, String> man = new Hashtable<String, String>();
+	private HashMap<String, String> man = new HashMap<String, String>();
 
 	public Help() {
 		super("CmdHelp", "Display details and syntax of command; Usage: !aha help <command>", "help");
