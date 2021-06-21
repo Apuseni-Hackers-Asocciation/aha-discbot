@@ -3,6 +3,11 @@
  */
 package eu.apuseni.discbot;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.Properties;
+
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
@@ -11,28 +16,29 @@ import discord4j.core.object.entity.User;
 
 public class App {
 
-	public static void main(String[] args) {
-		GatewayDiscordClient client = DiscordClientBuilder
-				.create("ODU0MjQ0NzYxMjc5MTM1NzQ0.YMhHbg.d5OQG-MQMnSKvz6DL9hzhOjxsCA").build().login().block();
+	public static void main(String[] args) throws FileNotFoundException, IOException {
+		Properties props = new Properties();
+		props.load(new FileInputStream("./gradle.properties"));
+		GatewayDiscordClient client = DiscordClientBuilder.create(props.getProperty("discord.token")).build().login()
+				.block();
 
 		client.getEventDispatcher().on(ReadyEvent.class).subscribe(event -> {
 			final User self = event.getSelf();
 			System.out.println(String.format("Logged in as %s#%s", self.getUsername(), self.getDiscriminator()));
 		});
-//
-//		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
-//				.filter(message -> message.getAuthor().map(user -> !user.isBot()).orElse(false))
-//				.filter(message -> message.getContent().equalsIgnoreCase("!ping")).flatMap(Message::getChannel)
-//				.flatMap(channel -> channel.createMessage("Pong!")).subscribe();
 
-		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage).subscribe(msg -> {
-			System.out.println("message");
-			long channel = msg.getChannelId().asLong();
-			String username = msg.getAuthor().get().getUsername();
-			msg.getId().asLong();
-			long timeStamp = msg.getTimestamp().toEpochMilli();
-			System.out.printf("%d: %s@%d: %s\n", timeStamp, username, channel, msg.getContent());
-		});
+		Version versionCmd = new Version();
+		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
+				.filter(msg -> versionCmd.test(msg.getContent())).subscribe(versionCmd::execute);
+
+//		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage).subscribe(msg -> {
+//			System.out.println("message");
+//			long channel = msg.getChannelId().asLong();
+//			String username = msg.getAuthor().get().getUsername();
+//			msg.getId().asLong();
+//			long timeStamp = msg.getTimestamp().toEpochMilli();
+//			System.out.printf("%d: %s@%d: %s\n", timeStamp, username, channel, msg.getContent());
+//		});
 
 		client.onDisconnect().block();
 
