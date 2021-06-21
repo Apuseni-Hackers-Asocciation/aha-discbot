@@ -4,10 +4,12 @@ public abstract class AbstractAhaCommand implements AhaCommand {
 
 	private final String name;
 	private final String helpMessage;
+	private final String commandText;
 
-	public AbstractAhaCommand(String name, String helpMessage) {
+	public AbstractAhaCommand(String name, String helpMessage, String commandText) {
 		this.name = name;
 		this.helpMessage = helpMessage;
+		this.commandText = commandText;
 	}
 
 	@Override
@@ -20,4 +22,8 @@ public abstract class AbstractAhaCommand implements AhaCommand {
 		return helpMessage;
 	}
 
+	@Override
+	public String getText() {
+		return commandText;
+	}
 }

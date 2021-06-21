@@ -8,7 +8,7 @@ public class NewContest extends AbstractAhaCommand {
 	private int id = 1;
 
 	public NewContest() {
-		super("NewContest", "Creates new contest");
+		super("NewContest", "Creates new contest; Usage: !aha new <contest name>", "new");
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class NewContest extends AbstractAhaCommand {
 			return false;
 		}
 
-		return cmps[0].equalsIgnoreCase("!aha") && cmps[1].equalsIgnoreCase("new");
+		return cmps[0].equalsIgnoreCase("!aha") && cmps[1].equalsIgnoreCase(this.getText());
 	}
 
 	private int save(String contestName) {

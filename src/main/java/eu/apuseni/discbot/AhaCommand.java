@@ -10,6 +10,8 @@ public interface AhaCommand extends Predicate<String> {
 
 	String getHelp();
 
+	String getText();
+
 	void execute(Message message);
 
 }

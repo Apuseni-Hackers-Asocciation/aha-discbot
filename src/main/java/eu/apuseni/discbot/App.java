@@ -27,11 +27,17 @@ public class App {
 			System.out.println(String.format("Logged in as %s#%s", self.getUsername(), self.getDiscriminator()));
 		});
 
+		Help helpCmd = new Help();
+		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
+				.filter(msg -> helpCmd.test(msg.getContent())).subscribe(helpCmd::execute);
+
 		Version versionCmd = new Version();
+		helpCmd.register(versionCmd);
 		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
 				.filter(msg -> versionCmd.test(msg.getContent())).subscribe(versionCmd::execute);
 
 		NewContest newContest = new NewContest();
+		helpCmd.register(newContest);
 		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
 				.filter(msg -> newContest.test(msg.getContent())).subscribe(newContest::execute);
 
