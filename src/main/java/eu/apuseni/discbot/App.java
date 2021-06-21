@@ -31,6 +31,10 @@ public class App {
 		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
 				.filter(msg -> versionCmd.test(msg.getContent())).subscribe(versionCmd::execute);
 
+		NewContest newContest = new NewContest();
+		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
+				.filter(msg -> newContest.test(msg.getContent())).subscribe(newContest::execute);
+
 //		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage).subscribe(msg -> {
 //			System.out.println("message");
 //			long channel = msg.getChannelId().asLong();
