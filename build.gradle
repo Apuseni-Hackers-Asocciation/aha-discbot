@@ -5,16 +5,14 @@ plugins {
 
 repositories {
     jcenter()
-    mavenCentral() // for transitive dependencies
-    
+    mavenCentral()
 }
-
 
 dependencies {
     implementation 'com.discord4j:discord4j-core:3.1.5'
     implementation 'software.amazon.awssdk:s3:2.16.87'
     implementation 'software.amazon.awssdk:sqs:2.16.87'
-        
+
     testImplementation 'junit:junit:4.13'
 
 
@@ -37,8 +35,8 @@ jar {
       'Build-Revision' : versioning.info.build,
       'Build-Version'  : versioning.info.display,
       'Build-Jdk'      : "${System.properties['java.version']} (${System.properties['java.vendor']} ${System.properties['java.vm.version']})",
-      'Build-Os'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}"
-      'Created-By'     : "Gradle ${gradle.gradleVersion}",                
+      'Build-Os'       : "${System.properties['os.name']} ${System.properties['os.arch']} ${System.properties['os.version']}",
+      'Created-By'     : "Gradle ${gradle.gradleVersion}"
     )
   }
 }
