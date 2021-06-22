@@ -8,7 +8,7 @@ public class NewContest extends AbstractAhaCommand {
 	private int id = 1;
 
 	public NewContest() {
-		super("NewContest", "Creates new contest; Usage: !aha new <contest name>", "new");
+		super("new", "!aha new <contest_name>", "Creates new contest");
 	}
 
 	@Override
@@ -17,17 +17,7 @@ public class NewContest extends AbstractAhaCommand {
 		String[] cmps = content.split("\\s+");
 		int id = save(cmps[2]);
 		MessageChannel channel = message.getChannel().block();
-		channel.createMessage(String.format("concrsul %s a fost salvat cu ID %d", cmps[2], id)).block();
-	}
-
-	@Override
-	public boolean test(String content) {
-		String[] cmps = content.split("\\s+");
-		if (cmps.length < 3) {
-			return false;
-		}
-
-		return cmps[0].equalsIgnoreCase("!aha") && cmps[1].equalsIgnoreCase(this.getText());
+		channel.createMessage(String.format("Concursul %s a fost salvat cu Id %d", cmps[2], id)).block();
 	}
 
 	private int save(String contestName) {

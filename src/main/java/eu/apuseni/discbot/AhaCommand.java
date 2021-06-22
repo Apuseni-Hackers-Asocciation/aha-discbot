@@ -8,9 +8,9 @@ public interface AhaCommand extends Predicate<String> {
 
 	String getName();
 
-	String getHelp();
+	String getSyntax();
 
-	String getText();
+	String getDescription();
 
 	void execute(Message message);
 

@@ -6,15 +6,15 @@ import discord4j.core.object.entity.Message;
 import discord4j.core.object.entity.channel.MessageChannel;
 
 public class Help extends AbstractAhaCommand {
-	private HashMap<String, String> man = new HashMap<String, String>();
+	private final HashMap<String, AhaCommand> man = new HashMap<>();
 
 	public Help() {
-		super("CmdHelp", "Display details and syntax of command; Usage: !aha help <command>", "help");
-		man.put(this.getText(), this.getHelp());
+		super("help", "!aha help <command>", "Display details and syntax of command");
+		register(this);
 	}
 
 	public void register(AbstractAhaCommand com) {
-		man.put(com.getText(), com.getHelp());
+		man.put(com.getName(), com);
 	}
 
 	@Override
@@ -22,20 +22,15 @@ public class Help extends AbstractAhaCommand {
 		String content = message.getContent();
 		String[] cmps = content.split("\\s+");
 		MessageChannel channel = message.getChannel().block();
+		if (cmps.length < 3) {
+			channel.createMessage("You must specify a command!").block();
+		}
 		if (man.containsKey(cmps[2])) {
-			channel.createMessage(String.format("%s: %s", cmps[2], man.get(cmps[2]))).block();
+			AhaCommand ahaCommand = man.get(cmps[2]);
+			channel.createMessage(ahaCommand.toString()).block();
 		} else {
 			channel.createMessage(String.format("Command %s not found", cmps[2])).block();
 		}
-	}
-
-	@Override
-	public boolean test(String content) {
-		String[] cmps = content.split("\\s+");
-		if (cmps.length < 3) {
-			return false;
-		}
-		return cmps[0].equalsIgnoreCase("!aha") && cmps[1].equalsIgnoreCase(this.getText());
 	}
 
 }
