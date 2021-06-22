@@ -22,7 +22,7 @@ dependencies {
 
 application {
     mainClass = 'eu.apuseni.discbot.App'
-    applicationDefaultJvmArgs = ['-Xmx256M'"]
+    applicationDefaultJvmArgs = ['-Xmx256M']
 }
 
 
