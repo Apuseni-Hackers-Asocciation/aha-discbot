@@ -23,7 +23,8 @@ application {
     applicationDefaultJvmArgs = ['-Xmx256M']
 }
 
-
+version=versioning.info.display
+group = 'eu.apuseni.aha'
 
 jar {
   manifest {

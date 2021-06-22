@@ -3,13 +3,12 @@
  */
 package eu.apuseni.discbot;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Properties;
 
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
+import discord4j.core.event.EventDispatcher;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.User;
@@ -17,29 +16,31 @@ import discord4j.core.object.entity.User;
 public class App {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
-		Properties props = new Properties();
-		props.load(new FileInputStream("./gradle.properties"));
-		GatewayDiscordClient client = DiscordClientBuilder.create(props.getProperty("discord.token")).build().login()
-				.block();
+		String discordToken = System.getenv("DISCORD_TOKEN");
+		GatewayDiscordClient client = DiscordClientBuilder.create(discordToken).build().login().block();
 
-		client.getEventDispatcher().on(ReadyEvent.class).subscribe(event -> {
+		EventDispatcher eventDispatcher = client.getEventDispatcher();
+		eventDispatcher.on(ReadyEvent.class).subscribe(event -> {
 			final User self = event.getSelf();
 			System.out.println(String.format("Logged in as %s#%s", self.getUsername(), self.getDiscriminator()));
 		});
 
 		Help helpCmd = new Help();
-		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
-				.filter(msg -> helpCmd.test(msg.getContent())).subscribe(helpCmd::execute);
+		eventDispatcher.on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
+				.filter(msg -> helpCmd.test(msg.getContent())).subscribe(helpCmd::execute, App::errorHandler);
 
 		Version versionCmd = new Version();
 		helpCmd.register(versionCmd);
-		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
-				.filter(msg -> versionCmd.test(msg.getContent())).subscribe(versionCmd::execute);
+		eventDispatcher.on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
+				.filter(msg -> versionCmd.test(msg.getContent())).subscribe(versionCmd::execute, App::errorHandler);
+
+//		eventDispatcher.on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
+//		.filter(msg -> versionCmd.test(msg.getContent())).flatMap(null).onE
 
 		NewContest newContest = new NewContest();
 		helpCmd.register(newContest);
-		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
-				.filter(msg -> newContest.test(msg.getContent())).subscribe(newContest::execute);
+		eventDispatcher.on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
+				.filter(msg -> newContest.test(msg.getContent())).subscribe(newContest::execute, App::errorHandler);
 
 //		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage).subscribe(msg -> {
 //			System.out.println("message");
@@ -54,4 +55,7 @@ public class App {
 
 	}
 
+	private static void errorHandler(Throwable th) {
+		th.printStackTrace();
+	}
 }

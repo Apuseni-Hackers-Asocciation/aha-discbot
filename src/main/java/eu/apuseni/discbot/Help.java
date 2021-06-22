@@ -24,8 +24,7 @@ public class Help extends AbstractAhaCommand {
 		MessageChannel channel = message.getChannel().block();
 		if (cmps.length < 3) {
 			channel.createMessage("You must specify a command!").block();
-		}
-		if (man.containsKey(cmps[2])) {
+		} else if (man.containsKey(cmps[2])) {
 			AhaCommand ahaCommand = man.get(cmps[2]);
 			channel.createMessage(ahaCommand.toString()).block();
 		} else {
