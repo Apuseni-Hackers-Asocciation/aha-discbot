@@ -15,9 +15,13 @@ public class NewContest extends AbstractAhaCommand {
 	public void execute(Message message) {
 		String content = message.getContent();
 		String[] cmps = content.split("\\s+");
-		int id = save(cmps[2]);
 		MessageChannel channel = message.getChannel().block();
-		channel.createMessage(String.format("Concursul %s a fost salvat cu Id %d", cmps[2], id)).block();
+		if (cmps.length >= 3) {
+			int id = save(cmps[2]);
+			channel.createMessage(String.format("Contest %s saved with ID %d", cmps[2], id)).block();
+		} else {
+			channel.createMessage("The contest must have a name.").block();
+		}
 	}
 
 	private int save(String contestName) {
