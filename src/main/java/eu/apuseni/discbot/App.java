@@ -18,8 +18,8 @@ public class App {
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		String discordToken = System.getenv("DISCORD_TOKEN");
 		GatewayDiscordClient client = DiscordClientBuilder.create(discordToken).build().login().block();
-
 		EventDispatcher eventDispatcher = client.getEventDispatcher();
+
 		eventDispatcher.on(ReadyEvent.class).subscribe(event -> {
 			final User self = event.getSelf();
 			System.out.println(String.format("Logged in as %s#%s", self.getUsername(), self.getDiscriminator()));
