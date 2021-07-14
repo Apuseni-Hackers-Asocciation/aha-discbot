@@ -6,7 +6,7 @@ import discord4j.core.object.entity.channel.MessageChannel;
 public class Version extends AbstractAhaCommand {
 
 	public Version() {
-		super("version", "!aha version)", "Displays bot version");
+		super("version", "!aha ver(sion)", "Displays bot version");
 	}
 
 	@Override
@@ -15,4 +15,8 @@ public class Version extends AbstractAhaCommand {
 		channel.createMessage("Version 1.1").block();
 	}
 
+	@Override
+	protected boolean alternateFilter(String[] cmps) {
+		return cmps[1].regionMatches(true, 0, "version", 0, 3);
+	}
 }

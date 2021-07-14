@@ -33,11 +33,16 @@ public abstract class AbstractAhaCommand implements AhaCommand {
 		if (cmps.length < 2) {
 			return false;
 		}
-		return cmps[0].equalsIgnoreCase("!aha") && cmps[1].equalsIgnoreCase(this.getName()) && extraFilter(cmps);
+		return cmps[0].equalsIgnoreCase("!aha") && (cmps[1].equalsIgnoreCase(this.getName()) || alternateFilter(cmps))
+				&& extraFilter(cmps);
 	}
 
 	protected boolean extraFilter(String[] cmps) {
 		return true;
+	}
+
+	protected boolean alternateFilter(String[] cmps) {
+		return false;
 	}
 
 	@Override
