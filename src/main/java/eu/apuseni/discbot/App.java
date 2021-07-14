@@ -12,10 +12,18 @@ import discord4j.core.event.EventDispatcher;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
 import discord4j.core.event.domain.message.MessageCreateEvent;
 import discord4j.core.object.entity.User;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.sqs.SqsClient;
 
 public class App {
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
+		Region region = Region.EU_CENTRAL_1;
+		String rootBucketName = "apuseni.eu-dev";
+		S3Client s3 = S3Client.builder().region(region).build();
+		SqsClient sqs = SqsClient.builder().region(region).build();
+		AhaManager ahaMan = new AhaManager(s3, rootBucketName, sqs);
 		String discordToken = System.getenv("DISCORD_TOKEN");
 		GatewayDiscordClient client = DiscordClientBuilder.create(discordToken).build().login().block();
 		EventDispatcher eventDispatcher = client.getEventDispatcher();
@@ -37,7 +45,7 @@ public class App {
 //		eventDispatcher.on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
 //		.filter(msg -> versionCmd.test(msg.getContent())).flatMap(null).onE
 
-		NewContest newContest = new NewContest();
+		NewContest newContest = new NewContest(ahaMan);
 		helpCmd.register(newContest);
 		eventDispatcher.on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
 				.filter(msg -> newContest.test(msg.getContent())).subscribe(newContest::execute, App::errorHandler);

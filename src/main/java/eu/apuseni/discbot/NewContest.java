@@ -5,10 +5,11 @@ import discord4j.core.object.entity.channel.MessageChannel;
 
 public class NewContest extends AbstractAhaCommand {
 
-	private int id = 1;
+	private AhaManager manager;
 
-	public NewContest() {
+	public NewContest(AhaManager ahaMan) {
 		super("new", "!aha new <contest_name>", "Creates new contest");
+		this.manager = ahaMan;
 	}
 
 	@Override
@@ -17,15 +18,12 @@ public class NewContest extends AbstractAhaCommand {
 		String[] cmps = content.split("\\s+");
 		MessageChannel channel = message.getChannel().block();
 		if (cmps.length >= 3) {
-			int id = save(cmps[2]);
+			long id = manager.createContest(cmps[2], String.format("%s#%s", message.getAuthor().get().getUsername(),
+					message.getAuthor().get().getDiscriminator()));
 			channel.createMessage(String.format("Contest %s saved with ID %d", cmps[2], id)).block();
 		} else {
 			channel.createMessage("The contest must have a name.").block();
 		}
-	}
-
-	private int save(String contestName) {
-		return id++;
 	}
 
 }
