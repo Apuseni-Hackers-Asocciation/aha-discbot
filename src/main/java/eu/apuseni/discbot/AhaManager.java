@@ -28,7 +28,7 @@ public class AhaManager {
 		this.sqs = sqs;
 	}
 
-	private long nextSerquence() {
+	private long nextSequence() {
 		GetObjectTaggingRequest seqNumber = GetObjectTaggingRequest.builder().bucket(rootBucketName).key(CONTESTS)
 				.build();
 		List<Tag> tagSet = s3.getObjectTagging(seqNumber).tagSet();
@@ -44,7 +44,7 @@ public class AhaManager {
 	}
 
 	public long createContest(String contestName, String author) {
-		long contestNumber = nextSerquence();
+		long contestNumber = nextSequence();
 		String tagging = String.format("contestName=%s&author=%s", contestName, author);
 		Builder putReq = PutObjectRequest.builder().bucket(rootBucketName).key(CONTESTS + contestNumber + "/")
 				.tagging(tagging);
