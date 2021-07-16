@@ -29,9 +29,8 @@ public class AddProblem extends AbstractAhaCommand {
 					channel.createMessage(String.format("Problem %s added to contest %s", cmps[3], cmps[2])).block();
 					info("Problem {} added to contest {}", cmps[3], cmps[2]);
 				} else {
-					channel.createMessage(String.format("Contest %s already has problem '%s'", cmps[2], cmps[3]))
-							.block();
-					info("Contest {} already has problem '{}'", cmps[2], cmps[3]);
+					channel.createMessage(String.format("Contest %s does not exist", cmps[2])).block();
+					info("Contest {} does not exist", cmps[2]);
 				}
 			} catch (Exception ex) {
 				if (ex instanceof NumberFormatException) {
@@ -40,8 +39,7 @@ public class AddProblem extends AbstractAhaCommand {
 							String.format("%s is not a valid contest ID. The ID must be an integer.", cmps[2])).block();
 				} else {
 					error(ex, "Failed to add problem");
-					channel.createMessage(String.format(
-							"The problem cannot be added. Make sure that the contest with ID %s exists.", cmps[2]))
+					channel.createMessage(String.format("The problem cannot be added. Try again later.", cmps[2]))
 							.block();
 				}
 			}
