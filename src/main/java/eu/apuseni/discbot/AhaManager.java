@@ -65,7 +65,7 @@ public class AhaManager {
 		}
 	}
 
-	public void addProblem(long contestNumber, String problemId) {
+	public boolean addProblem(long contestNumber, String problemId) {
 		if (contestExists(contestNumber)) {
 			String key = CONTESTS + contestNumber + "/" + problemId;
 			String tagging = String.format("validated=false");
@@ -74,6 +74,9 @@ public class AhaManager {
 			SendMessageRequest anounce = SendMessageRequest.builder().queueUrl(PROBLEM_VALIDATION_QUEUE)
 					.messageBody(key).build();
 			sqs.sendMessage(anounce);
+			return true;
+		} else {
+			return false;
 		}
 	}
 

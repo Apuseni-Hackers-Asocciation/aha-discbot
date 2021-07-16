@@ -50,6 +50,11 @@ public class App {
 		eventDispatcher.on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
 				.filter(msg -> newContest.test(msg.getContent())).subscribe(newContest::execute, App::errorHandler);
 
+		AddProblem addProblem = new AddProblem(ahaMan);
+		helpCmd.register(addProblem);
+		eventDispatcher.on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage)
+				.filter(msg -> addProblem.test(msg.getContent())).subscribe(addProblem::execute, App::errorHandler);
+
 //		client.getEventDispatcher().on(MessageCreateEvent.class).map(MessageCreateEvent::getMessage).subscribe(msg -> {
 //			System.out.println("message");
 //			long channel = msg.getChannelId().asLong();
