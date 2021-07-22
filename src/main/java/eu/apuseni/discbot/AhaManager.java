@@ -1,5 +1,6 @@
 package eu.apuseni.discbot;
 
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,12 +66,12 @@ public class AhaManager {
 		}
 	}
 
-	public boolean addProblem(long contestNumber, String problemId) {
+	public boolean addProblem(long contestNumber, String problemId, String localFilePath) {
 		if (contestExists(contestNumber)) {
 			String key = CONTESTS + contestNumber + "/" + problemId;
 			String tagging = String.format("validated=false");
 			Builder putReq = PutObjectRequest.builder().bucket(rootBucketName).key(key).tagging(tagging);
-			PutObjectResponse response = s3.putObject(putReq.build(), EMPTY_OBJECT);
+			s3.putObject(putReq.build(), Paths.get(localFilePath));
 			SendMessageRequest anounce = SendMessageRequest.builder().queueUrl(PROBLEM_VALIDATION_QUEUE)
 					.messageBody(key).build();
 			sqs.sendMessage(anounce);
@@ -110,10 +111,10 @@ public class AhaManager {
 	 * System.out.println(s3st.checkProblem(5, "b"));
 	 * System.out.println(s3st.checkProblem(5, "c"));
 	 * System.out.println(s3st.checkProblem(5, "d"));
-	 * 
+	 *
 	 * // PutObjectRequest req = new PutObjectRequest(); // s3.putObject(null,
 	 * null);
-	 * 
+	 *
 	 * //
 	 * s3.listObjects(ListObjectsRequest.builder().bucket(rootBucketName).build()).
 	 * contents() // .forEach(System.out::println); }
